@@ -60,13 +60,13 @@ def release_local(local):
 
 
 class Local(object):    # Local 对象
-    __slots__ = ('__storage__', '__lock__')    # 定义slots， 只允许动态添加 __storage__ 和 __lock__ 属性
+    __slots__ = ('__storage__', '__lock__')    # 定义 slots， 只允许动态添加 __storage__ 和 __lock__ 属性
 
     def __init__(self):     # 初始化方法，会新增两个属性 __storage__ 和 __lock__，值分别为 {} 和 allocate_lock()
         object.__setattr__(self, '__storage__', {})
         object.__setattr__(self, '__lock__', allocate_lock())
 
-    # __storage__ 是一个嵌套字典，形式如下：{“线程1或协程1的 id“:{"key1":"value1", "key2":"value2"}, “线程2或协程2的 id“:{"key1":"value1", "key2":"value2"}......}
+    # __storage__ 是一个嵌套字典，形式如下：{"线程 1 或协程 1 的 id":{"key1":"value1", "key2":"value2"}, "线程 2 或协程 2 的 id":{"key1":"value1", "key2":"value2"}......}
     # 通过此方式， 实现线程或协程的数据访问隔离
 
     """
@@ -166,7 +166,7 @@ class LocalStack(object):    # LocalStack 对象
         self._lock = allocate_lock()
 
     # LocalStack 中所有的数据操作都是基于 self.local 即实例化的 Local 对象完成的
-    # self._local 的 __storage__ 结构： {“线程1或协程1的 id“:{"stack": [obj1, obj2], "key1":"value1", "key2":"value2"}, “线程2或协程2的 id“:{"stack": [obj1, obj2],"key1":"value1", "key2":"value2"}......}
+    # self._local 的 __storage__ 结构： {"线程 1 或协程 1 的 id":{"stack": [obj1, obj2], "key1":"value1", "key2":"value2"}, "线程 2 或协程 2 的 id":{"stack": [obj1, obj2],"key1":"value1", "key2":"value2"}......}
     # 通过此方式，用 list 实现了一个 stack， 并且实现线程或协程的数据访问隔离
 
     """
@@ -211,7 +211,7 @@ class LocalStack(object):    # LocalStack 对象
     def __call__(self):  # 重载 __call__ 方法
         def _lookup():  # 定义一个 _lookup 方法， 通过 self.top 方法判断 stack 中是否有对象
             rv = self.top   # 执行 self.top 操作
-            if rv is None:    # 如果 rv 为空则跑出异常
+            if rv is None:    # 如果 rv 为空则抛出异常
                 raise RuntimeError('object unbound')
             return rv  # 返回 rv
         return LocalProxy(_lookup)
@@ -356,7 +356,7 @@ class LocalProxy(object):    # LocalProxy 类
     .. versionchanged:: 0.6.1
        The class can be instanciated with a callable as well now.
     """
-    __slots__ = ('__local', '__dict__', '__name__')    # 定义slots， 只允许动态添加 __local__, __dict__ 和 __name__ 属性
+    __slots__ = ('__local', '__dict__', '__name__')    # 定义 slots， 只允许动态添加 __local__, __dict__ 和 __name__ 属性
 
     def __init__(self, local, name=None):    # 定义两个属性 _LocalProxy__local 和 __name__， 值分别为 local， name
         object.__setattr__(self, '_LocalProxy__local', local)
